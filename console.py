@@ -131,9 +131,9 @@ class HBNBCommand(cmd.Cmd):
             return
 
         # storage.new(new_instance)
-        storage.save()
+        new_instance.save()
         print(new_instance.id)
-        storage.save()
+        # storage.save()
 
     def parse_create_arguments(self, arg):
         """ Parse the create command arguments """
