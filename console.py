@@ -131,9 +131,26 @@ class HBNBCommand(cmd.Cmd):
             return
 
         # storage.new(new_instance)
-        new_instance.save()
-        print(new_instance.id)
+        # new_instance.save()
+        # print(new_instance.id)
         # storage.save()
+        if os.getenv('HBNB_TYPE_STORAGE') == 'db':
+            if not hasattr(params, 'id'):
+                obj_kwargs['id'] = str(uuid.uuid4())
+            if not hasattr(params, 'created_at'):
+                obj_kwargs['created_at'] = str(datetime.now())
+            if not hasattr(params, 'updated_at'):
+                obj_kwargs['updated_at'] = str(datetime.now())
+            new_instance = HBNBCommand.classes[class_name](**params)
+            new_instance.save()
+            print(new_instance.id)
+        else:
+            new_instance = HBNBCommand.classes[class_name]()
+            for key, value in params.items():
+                if key not in ignored_attrs:
+                    setattr(new_instance, key, value)
+            new_instance.save()
+            print(new_instance.id)
 
     def parse_create_arguments(self, arg):
         """ Parse the create command arguments """
