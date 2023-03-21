@@ -130,10 +130,10 @@ class HBNBCommand(cmd.Cmd):
             print("** instance could not be created **")
             return
 
-        self.storage.new(new_instance)
-        self.storage.save()
+        storage.new(new_instance)
+        storage.save()
         print(new_instance.id)
-        self.storage.save()
+        # storage.save()
 
     def parse_create_arguments(self, arg):
         """ Parse the create command arguments """
