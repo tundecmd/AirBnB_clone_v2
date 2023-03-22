@@ -14,14 +14,14 @@ class State(BaseModel, Base):
         cities = relationship("City", backref="state",
                                cascade="all, delete, delete-orphan")
     else:
-    name = ""
+        name = ""
 
-    @property
-    def cities(self):
-        """ Get list of cities """
-        related_cities = []
-        all_cities = models.storage.all("City").values()
-        for city in all_cities:
-            if city.state_id == self.id:
-                related_cities.append(city)
-        return related_cites
+        @property
+        def cities(self):
+            """ Get list of cities """
+            related_cities = []
+            all_cities = models.storage.all("City").values()
+            for city in all_cities:
+                if city.state_id == self.id:
+                    related_cities.append(city)
+            return related_cites
