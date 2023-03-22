@@ -9,11 +9,11 @@ from sqlalchemy.orm import relationship
 class State(BaseModel, Base):
     """ State class """
     __tablename__ = "states"
-    name = Column(String(60), nullable=False)
-    cities = relationship("City", backref="state", cascade="all, delete, delete-orphan")
-
-
-
+    if storage_type == 'db':
+        name = Column(String(60), nullable=False)
+        cities = relationship("City", backref="state",
+                               cascade="all, delete, delete-orphan")
+    else:
     name = ""
 
     @property
@@ -24,5 +24,4 @@ class State(BaseModel, Base):
         for city in all_cities:
             if city.state_id == self.id:
                 related_cities.append(city)
-
         return related_cites
