@@ -130,7 +130,7 @@ class HBNBCommand(cmd.Cmd):
             return
     
         param_pairs = re.findall(
-            r'(\w+)=(\"[\w\s\.]+\"|\d+(?:\.\d+)?)',
+            r'(\w+)=(\"[\w\s\.]+\"|-?\d+(?:\.\d+)?)',
             parameters
         )
         # print(param_pairs)
