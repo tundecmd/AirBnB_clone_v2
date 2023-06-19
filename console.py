@@ -114,92 +114,55 @@ class HBNBCommand(cmd.Cmd):
         """ Overrides the emptyline method of CMD """
         pass
 
-    def do_create(self, arg):
+        def do_create(self, args):
         """ Create an object of any class"""
-        ignored_attrs = ('id', 'created_at', 'updated_at', '__class__')
-        if not arg:
+        if not args:
             print("** class name missing **")
             return
-        class_name, params = self.parse_create_arguments(arg)
-
-        if not class_name:
+        tokens = args.split()
+        class_name = tokens[0]
+        # print(class_name)
+        # print(tokens)
+        parameters = " ".join(tokens[1:])
+        # print(parameters)
+        if class_name not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
 
-        new_instance = self.create_instance(class_name, params)
+        param_pairs = re.findall(
+            r'(\w+)=(\"[\w\s\.]+\"|\d+(?:\.\d+)?)',
+            parameters
+        )
+        # print(param_pairs)
+        new_instance = HBNBCommand.classes[class_name]()
+        params_dict = {}
+        for key, value in param_pairs:
+            # value = value.strip('"').replace('_', ' ')
+            try:
+                if value.startswith('"') and value.endswith('"'):
+                    value = value.strip('"').replace('_', ' ')
+                elif '.' in value:
+                    value = float(value)
+                else:
+                    value = int(value)
+            except ValueError as e:
+                print(e)
+                continue
+            params_dict[key] = value
+            setattr(new_instance, key, value)
 
-        if not new_instance:
-            print("** instance could not be created **")
-            return
-
-        # storage.new(new_instance)
+        # Creating a new instance of the class with the provided parameters
+        # new_instance = HBNBCommand.classes[class_name]()
         # new_instance.save()
         # print(new_instance.id)
+        # print(new_instance)
+        # print(params_dict)
+        # new_instance = HBNBCommand.classes[args]()
+        storage.new(new_instance)
+        new_instance.save()
+        storage.save()
+        print(new_instance.id)
         # storage.save()
-        if os.getenv('HBNB_TYPE_STORAGE') == 'db':
-            if not hasattr(params, 'id'):
-                obj_kwargs['id'] = str(uuid.uuid4())
-            if not hasattr(params, 'created_at'):
-                obj_kwargs['created_at'] = str(datetime.now())
-            if not hasattr(params, 'updated_at'):
-                obj_kwargs['updated_at'] = str(datetime.now())
-            new_instance = HBNBCommand.classes[class_name](**params)
-            new_instance.save()
-            print(new_instance.id)
-        else:
-            new_instance = HBNBCommand.classes[class_name]()
-            for key, value in params.items():
-                if key not in ignored_attrs:
-                    setattr(new_instance, key, value)
-            new_instance.save()
-            print(new_instance.id)
-
-    def parse_create_arguments(self, arg):
-        """ Parse the create command arguments """
-        args = arg.split()
-        class_name = args[0]
-
-        if class_name not in HBNBCommand.classes:
-            return None, {}
-
-        params = {}
-        for arg in args:
-            key, val = self.parse_create_parameter(arg)
-            if key:
-                params[key]: val
-
-        return class_name, params
-
-    def parse_create_parameter(self, arg):
-        """ Parse a parameter """
-        try:
-            key, val = arg.split("=")
-        except ValueError:
-            return None, None
-
-        # Try to convert the parameter value to an integer, float, or string
-        if val.startswith('"') and val.endswith('"'):
-            val = val[1:-1].replace('_', ' ').replace('\\"', '"')
-        elif '.' in val:
-            try:
-                val = float(val)
-            except ValueError:
-                return None, None
-        else:
-            try:
-                val = int(val)
-            except ValueError:
-                return None, None
-        return key, val
-
-    def create_instance(self, class_name, params):
-        """ create a new instance """
-        try:
-            instance = self.classes[class_name](**params)
-        except Exception:
-            return None
-
-        return instance
 
     def help_create(self):
         """ Help information for the create method """
