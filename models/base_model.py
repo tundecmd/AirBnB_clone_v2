@@ -32,7 +32,7 @@ class BaseModel:
                 
                 setattr(self, key, val)
 
-                if key is not '__class__':
+                if key != '__class__':
                     setattr(self, key, val)
 
                 if key in ["created_at", "updated_at"]:
