@@ -114,8 +114,8 @@ class HBNBCommand(cmd.Cmd):
         """ Overrides the emptyline method of CMD """
         pass
 
-        def do_create(self, args):
-        """ Create an object of any class"""
+    def do_create(self, args):
+    """ Create an object of any class"""
         if not args:
             print("** class name missing **")
             return
@@ -128,7 +128,7 @@ class HBNBCommand(cmd.Cmd):
         if class_name not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-
+    
         param_pairs = re.findall(
             r'(\w+)=(\"[\w\s\.]+\"|\d+(?:\.\d+)?)',
             parameters
@@ -150,7 +150,7 @@ class HBNBCommand(cmd.Cmd):
                 continue
             params_dict[key] = value
             setattr(new_instance, key, value)
-
+    
         # Creating a new instance of the class with the provided parameters
         # new_instance = HBNBCommand.classes[class_name]()
         # new_instance.save()
